@@ -88,7 +88,7 @@ public class gestorCursos {
         System.out.println("Usuario registrado exitosamente.");
     }
 
-    private static void mostrarCursosDisponibles(List<curso> cursos) {
+    public static void mostrarCursosDisponibles(List<curso> cursos) {
         System.out.println("=== Cursos Disponibles ===");
         for (curso curso : cursos) {
             System.out.println(curso.getidCurso() + ". " + curso.getcurso());
@@ -182,8 +182,29 @@ public class gestorCursos {
         }
     }
 
+   /* private static List<ponente> obtenerListaDePonentesDesdeArchivo(String rutaArchivo) {
+        List<ponente> ponentes = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split(",");
+                int dni = Integer.parseInt(partes[0]);
+                String nombreCompleto = partes[1];
+                String correoElectronico = partes[2];
+                String contraseña = partes[3];
+
+                ponente ponente = new ponente(dni, nombreCompleto, correoElectronico, contraseña);
+                ponentes.add(ponente);
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return ponentes;
+    }*/
     
-    private static List<usuario> cargarUsuarios() {
+    public static List<usuario> cargarUsuarios() {
         List<usuario> usuarios = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(USUARIOS_FILE))) {
             String line;
