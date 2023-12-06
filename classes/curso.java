@@ -1,7 +1,9 @@
 package classes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class curso implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -12,6 +14,9 @@ public class curso implements Serializable{
 	private usuario ponente;
 	private int maxinscripciones;
 	private String descripcion;
+	private List<inscrito> inscritos;
+
+	
 	
 	public curso(int idCurso,String curso,Date fechaInicio,Date fechaFin, usuario ponente,int maxinscripciones,String descripcion) {
 		this.idCurso=idCurso;
@@ -77,6 +82,21 @@ public class curso implements Serializable{
 	public void setdescripcion(String descripcion) {
 		this.descripcion=descripcion;
 	}
+	
+	public void darDeAltaInscrito(inscrito inscrito) {
+        if (inscritos == null) {
+            inscritos = new ArrayList<>();
+        }
+        inscritos.add(inscrito);
+    }
+
+	
+	public void inscribirInscrito(inscrito inscrito) {
+        if (inscritos == null) {
+            inscritos = new ArrayList<>();
+        }
+        inscritos.add(inscrito);
+    }
 	
 	public String toString() {
         return idCurso + "," + curso + "," + fechaInicio + "," + fechaFin + "," + ponente.getDni()+", " + "maxinscripciones" + "," + descripcion;

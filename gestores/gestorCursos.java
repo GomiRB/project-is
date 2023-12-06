@@ -158,7 +158,7 @@ public class gestorCursos {
         return null;
     }
 
-    private static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
+    public static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
         for (curso curso : cursos) {
             if (curso.getidCurso() == idCurso) {
                 return curso;

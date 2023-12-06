@@ -2,6 +2,8 @@ package classes;
 
 import java.util.List;
 
+import gestores.gestorCursos;
+
 public class inscrito extends usuario{
 	
 	private static final long serialVersionUID = 1L;
@@ -15,9 +17,9 @@ public class inscrito extends usuario{
         
 	}
 	
-	public void inscribirseEnCurso(List<curso> cursos) {
+	public void inscribirseEnCurso(int idCurso,List<curso> cursos) {
         // Lógica para inscribir al inscrito en el curso
-        curso curso = buscarCursoPorId(idCurso, cursos);
+        curso curso = gestorCursos.buscarCursoPorId(idCurso, cursos);
         if (curso != null) {
             curso.inscribirInscrito(this);
             System.out.println("Inscrito correctamente en el curso: " + curso.getcurso());
@@ -26,9 +28,10 @@ public class inscrito extends usuario{
         }
     }
 
-    public void darseDeAltaEnCurso(List<curso> cursos) {
+
+    public void darseDeAltaEnCurso(int idCurso,List<curso> cursos) {
         // Lógica para darse de alta en el curso
-        curso curso = buscarCursoPorId(idCurso, cursos);
+        curso curso = gestorCursos.buscarCursoPorId(idCurso, cursos);
         if (curso != null) {
             curso.darDeAltaInscrito(this);
             System.out.println("Dado de alta correctamente en el curso: " + curso.getcurso());
