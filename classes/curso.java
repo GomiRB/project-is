@@ -14,7 +14,6 @@ public class curso implements Serializable{
 	private usuario ponente;
 	private int maxinscripciones;
 	private String descripcion;
-	private List<inscrito> inscritos;
 
 	
 	
@@ -83,20 +82,6 @@ public class curso implements Serializable{
 		this.descripcion=descripcion;
 	}
 	
-	public void darDeAltaInscrito(inscrito inscrito) {
-        if (inscritos == null) {
-            inscritos = new ArrayList<>();
-        }
-        inscritos.add(inscrito);
-    }
-
-	
-	public void inscribirInscrito(inscrito inscrito) {
-        if (inscritos == null) {
-            inscritos = new ArrayList<>();
-        }
-        inscritos.add(inscrito);
-    }
 	
 	public String toString() {
         return idCurso + "," + curso + "," + fechaInicio + "," + fechaFin + "," + ponente.getDni()+", " + "maxinscripciones" + "," + descripcion;

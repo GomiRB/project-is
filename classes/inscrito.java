@@ -17,26 +17,5 @@ public class inscrito extends usuario{
         
 	}
 	
-	public void inscribirseEnCurso(int idCurso,List<curso> cursos) {
-        // Lógica para inscribir al inscrito en el curso
-        curso curso = gestorCursos.buscarCursoPorId(idCurso, cursos);
-        if (curso != null) {
-            curso.inscribirInscrito(this);
-            System.out.println("Inscrito correctamente en el curso: " + curso.getcurso());
-        } else {
-            System.out.println("Curso no encontrado.");
-        }
-    }
-
-
-    public void darseDeAltaEnCurso(int idCurso,List<curso> cursos) {
-        // Lógica para darse de alta en el curso
-        curso curso = gestorCursos.buscarCursoPorId(idCurso, cursos);
-        if (curso != null) {
-            curso.darDeAltaInscrito(this);
-            System.out.println("Dado de alta correctamente en el curso: " + curso.getcurso());
-        } else {
-            System.out.println("Curso no encontrado.");
-        }
-    }
+	
 }

@@ -2,12 +2,10 @@ package menus;
 import java.util.List;
 import java.util.Scanner;
 
-import classes.curso;
 import classes.usuario;
 import gestores.gestorCursos;
 public class menuInicioSesion {
-
-	public static void main(String[] args) {
+	public static void iniciarMenu() {
 	        Scanner scanner = new Scanner(System.in);
 
 	        List<usuario> usuarios =  gestorCursos.cargarUsuarios();
@@ -26,26 +24,33 @@ public class menuInicioSesion {
 	                    //iniciarSesionPonente(ponentes);
 	                    break;
 	                case 3:
-	                    System.out.println("Saliendo del programa. ¡Hasta luego!");
+	                	menuVisita.visita();
 	                    break;
+	                case 4:
+	                	menuInicio.inicio();
+	                case 5:
+	                	System.out.println("Saliendo del programa. ¡Hasta luego!");
 	                default:
 	                    System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
 	                    break;
 	            }
-	        } while (opcion != 3);
+	        } while (opcion != 5);
 
 	        scanner.close();
-	    }
-
+	}
+	
+		
 	    private static void mostrarMenuInicioSesion() {
 	        System.out.println("=== Menú de Inicio de Sesión ===");
 	        System.out.println("1. Iniciar sesión como Usuario");
-	        System.out.println("2. Iniciar sesión como Ponente");
-	        System.out.println("3. Salir");
+	        System.out.println("2. Iniciar sesión como Gestor Academico");
+	        System.out.println("3. Visitante");
+	        System.out.println("4. Volver menu anterior");
+	        System.out.println("5. Salir");
 	        System.out.print("Selecciona una opción: ");
 	    }
 
-	    private static void iniciarSesionUsuario(List<usuario> usuarios,List<curso> cursos) {
+	    private static void iniciarSesionUsuario(List<usuario> usuarios) {
 	        try (Scanner scanner = new Scanner(System.in)) {
 				System.out.print("Ingrese su DNI: ");
 				int dni = scanner.nextInt();
@@ -58,8 +63,7 @@ public class menuInicioSesion {
 
 				if (usuarioEncontrado != null) {
 				    System.out.println("¡Inicio de sesión exitoso como Usuario!");
-				    menuUsuario.menuusuario(usuarioEncontrado, cursos);
-				    // Aquí puedes agregar lógica adicional según sea necesario
+				    menuUsuario.menuUsuario(usuarioEncontrado);
 				} else {
 				    System.out.println("Credenciales incorrectas. Inicio de sesión fallido.");
 				}

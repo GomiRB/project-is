@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import classes.CursoUsuarioRelacion;
 import classes.curso;
 import classes.usuario;
 import menus.menuCursos;
@@ -20,51 +21,125 @@ public class gestorCursos {
 
     private static final String USUARIOS_FILE = "usuarios.txt";
     private static final String CURSOS_FILE = "cursos.txt";
+    private static final String RELACION_FILE = "relacion_cursos_usuarios.txt";
 
+    public static List<usuario> cargarUsuarios() {
+        List<usuario> usuarios = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(USUARIOS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int dni = Integer.parseInt(parts[0]);
+                String nombreCompleto = parts[1];
+                String correo = parts[2];
+                String contraseña = parts[3];
+                usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña));
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
+    
+    public static List<curso> cargarCursos() {
+        List<curso> cursos = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(CURSOS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int idCurso = Integer.parseInt(parts[0]);
+                String nombreCurso = parts[1];
+                String fechaInicioStr = parts[2];
+                String fechaFinStr = parts[3];
+                String nombreponente = parts[4];
+                int maxinscripciones = Integer.parseInt(parts[5]);
+                String descripcion = parts[6];
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date fechaInicio = dateFormat.parse(fechaInicioStr);
+                Date fechaFin = dateFormat.parse(fechaFinStr);
+                usuario ponente = buscarUsuarioPorNombre(nombreponente, usuarios);
+
+                if (ponente == null) {
+                    System.out.println("Error: Ponente no encontrado.");
+                    continue;  // Saltar al siguiente ciclo si el ponente no se encuentra
+                }
+                cursos.add(new curso(idCurso, nombreCurso,fechaInicio,fechaFin,ponente,maxinscripciones,descripcion));
+            }
+        } catch (IOException | NumberFormatException | ParseException e) {
+            e.printStackTrace();
+        }
+        return cursos;
+    }
+
+    
+    public static List<CursoUsuarioRelacion> cargarRelacionCursosUsuarios() {
+        List<CursoUsuarioRelacion> relaciones = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(RELACION_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int idCurso = Integer.parseInt(parts[0]);
+                String nombreCompleto = parts[1];
+                relaciones.add(new CursoUsuarioRelacion(idCurso, nombreCompleto));
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return relaciones;
+    }
+    
+    private static void guardarUsuarios(List<usuario> usuarios) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(USUARIOS_FILE))) {
+            for (usuario user : usuarios) {
+                writer.println(user.getDni() + "," + user.getNombreCompleto() + "," +
+                                user.getCorreoElectronico() + "," + user.getContraseña());
+            }
+            System.out.println("Datos de usuarios guardados correctamente en " + USUARIOS_FILE);
+        } catch (IOException e) {
+            System.err.println("Error al escribir en el archivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    
+    
+    public static void guardarCursos(List<curso> cursos) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CURSOS_FILE))) {
+            for (curso curso : cursos) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                writer.println(
+                    curso.getidCurso() + "," +
+                    curso.getcurso() + "," +
+                    dateFormat.format(curso.getfechaInicio()) + "," +
+                    dateFormat.format(curso.getfechaFin()) + "," +
+                    curso.getponente().getDni() + "," +  
+                    curso.getmaxins() + "," +
+                    curso.getdescripcion()
+                );
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
+    public static void guardarRelacionCursosUsuarios(CursoUsuarioRelacion relacion) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(RELACION_FILE, true))) {
+            writer.println(relacion.getIdCurso() + "," + relacion.getNombreCompleto());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    
     private static List<usuario> usuarios;
     private static List<curso> cursos;
 
-    public static void main(String[] args) {
-       usuarios = cargarUsuarios();
-       cursos = cargarCursos();
-
-        Scanner scanner = new Scanner(System.in);
-
-        int opcion;
-        do {
-            menuCursos.mostrarMenu();
-            opcion=menuCursos.obtenerOpcion(scanner);
-
-            switch (opcion) {
-                case 1:
-                    registrarUsuario(scanner,usuarios);
-                    break;
-                case 2:
-                    mostrarCursosDisponibles(cursos);
-                    break;
-                case 3:
-                    registrarEnCurso(scanner,usuarios,cursos);
-                    break;
-                case 4:
-                    mostrarUsuarios(usuarios);
-                    break;
-                case 5:
-                    System.out.println("Saliendo del programa. ¡Hasta luego!");
-                    break;
-                default:
-                    System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
-                    break;
-            }
-
-        } while (opcion != 5);
-
-        guardarUsuarios(usuarios);
-        guardarCursos(cursos);
-
-        scanner.close();
-    }
-
-    private static void registrarUsuario(Scanner scanner,List<usuario> usuarios) {
+    public static void registrarUsuario(Scanner scanner,List<usuario> usuarios) {
         System.out.println("=== Registro de Usuario ===");
         scanner.nextLine();
         System.out.print("DNI: ");
@@ -95,36 +170,67 @@ public class gestorCursos {
         }
     }
 
-    private static void registrarEnCurso(Scanner scanner, List<usuario> usuarios, List<curso> cursos) {
-    	System.out.println("=== Registro en Curso ===");
-        System.out.println("Ingrese el DNI del usuario que desea inscribir:");
-        int dniUsuario = scanner.nextInt();
-        usuario usuarioEncontrado = buscarUsuarioPorDni(dniUsuario, usuarios);
-
-        if (usuarioEncontrado == null) {
-            System.out.println("Usuario no encontrado.");
-            return;
-        }
-        mostrarCursosDisponibles(cursos);
-        System.out.println("Ingrese el ID del curso al que desea inscribir al usuario:");
+    public static void registrarEnCurso(Scanner scanner, usuario usuario, List<curso> listaCursos) {
+        System.out.println("=== Registro en Curso ===");
+        System.out.println("Ingrese el ID del curso al que desea inscribirse:");
         int idCurso = scanner.nextInt();
-        curso cursoEncontrado = buscarCursoPorId(idCurso, cursos);
+        scanner.nextLine();
+
+        curso cursoEncontrado = buscarCursoPorId(idCurso, listaCursos);
 
         if (cursoEncontrado == null) {
             System.out.println("Curso no encontrado.");
             return;
         }
-        mostrarInformacionCurso(cursos);
-        if (usuarioEncontrado.getCursosInscritos().contains(idCurso)) {
-            System.out.println("El usuario ya está inscrito en este curso.");
+
+        // Verificar si el usuario ya está inscrito en ese curso antes de inscribirlo
+        if (!usuario.estaInscritoEnCurso(idCurso)) {
+            usuario.inscribirEnCurso(idCurso);
+            System.out.println("Inscripción exitosa al curso: " + cursoEncontrado.getcurso());
+            
+            // Guardar la relación en el archivo
+            CursoUsuarioRelacion relacion = new CursoUsuarioRelacion(idCurso, usuario.getNombreCompleto());
+            guardarRelacionCursosUsuarios(relacion);
         } else {
-        		usuarioEncontrado.inscribirEnCurso(idCurso);
+            System.out.println("Ya está inscrito en este curso.");
         }
-        
-        System.out.println("Usuario inscrito exitosamente en el curso.");
     }
     
-    private static void mostrarInformacionCurso(List<curso> cursos2) {
+    public static void mostrarUsuariosInscritosEnCurso(List<curso> cursos, Scanner scanner) {
+        // Mostrar la lista de cursos para que el usuario elija
+        mostrarCursosDisponibles(cursos);
+
+        System.out.println("Ingrese el ID del curso para ver los usuarios inscritos:");
+        int idCursoSeleccionado = scanner.nextInt();
+        scanner.nextLine();  // Consumir la nueva línea después del entero
+
+        // Buscar el curso seleccionado por el usuario
+        curso cursoSeleccionado = buscarCursoPorId(idCursoSeleccionado, cursos);
+
+        if (cursoSeleccionado != null) {
+            // Mostrar los usuarios inscritos en el curso seleccionado
+            mostrarUsuariosInscritosEnCurso(cursoSeleccionado);
+        } else {
+            System.out.println("Curso no encontrado.");
+        }
+    }
+
+    public static void mostrarUsuariosInscritosEnCurso(curso curso) {
+    	
+        System.out.println("Usuarios inscritos en el curso " + curso.getcurso() + ":");
+        List<CursoUsuarioRelacion> relaciones = cargarRelacionCursosUsuarios();
+        
+        for (CursoUsuarioRelacion relacion : relaciones) {
+            if (relacion.getIdCurso() == curso.getidCurso()) {
+                System.out.println(relacion.getNombreCompleto());
+            }
+        }
+    }
+    
+    
+
+    
+    private static void mostrarInformacionCurso(List<curso> cursos) {
     	 if (cursos.isEmpty()) {
     	        System.out.println("No hay cursos disponibles.");
     	    } else {
@@ -157,6 +263,8 @@ public class gestorCursos {
         }
         return null;
     }
+    
+    
 
     public static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
         for (curso curso : cursos) {
@@ -165,104 +273,6 @@ public class gestorCursos {
             }
         }
         return null;
-    }
-    
-    
-    
-    private static void guardarUsuarios(List<usuario> usuarios) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(USUARIOS_FILE))) {
-            for (usuario user : usuarios) {
-                writer.println(user.getDni() + "," + user.getNombreCompleto() + "," +
-                                user.getCorreoElectronico() + "," + user.getContraseña());
-            }
-            System.out.println("Datos de usuarios guardados correctamente en " + USUARIOS_FILE);
-        } catch (IOException e) {
-            System.err.println("Error al escribir en el archivo: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-   /* private static List<ponente> obtenerListaDePonentesDesdeArchivo(String rutaArchivo) {
-        List<ponente> ponentes = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                String[] partes = linea.split(",");
-                int dni = Integer.parseInt(partes[0]);
-                String nombreCompleto = partes[1];
-                String correoElectronico = partes[2];
-                String contraseña = partes[3];
-
-                ponente ponente = new ponente(dni, nombreCompleto, correoElectronico, contraseña);
-                ponentes.add(ponente);
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        return ponentes;
-    }*/
-    
-    public static List<usuario> cargarUsuarios() {
-        List<usuario> usuarios = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(USUARIOS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                int dni = Integer.parseInt(parts[0]);
-                String nombreCompleto = parts[1];
-                String correo = parts[2];
-                String contraseña = parts[3];
-                usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña));
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-        }
-        return usuarios;
-    }
-
-    private static void guardarCursos(List<curso> cursos) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(CURSOS_FILE))) {
-            for (curso curso : cursos) {
-                writer.println(curso.getidCurso() + "," + curso.getcurso());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    
-    
-    private static List<curso> cargarCursos() {
-        List<curso> cursos = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(CURSOS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                int idCurso = Integer.parseInt(parts[0]);
-                String nombreCurso = parts[1];
-                String fechaInicioStr = parts[2];
-                String fechaFinStr = parts[3];
-                String nombreponente = parts[4];
-                int maxinscripciones = Integer.parseInt(parts[5]);
-                String descripcion = parts[6];
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date fechaInicio = dateFormat.parse(fechaInicioStr);
-                Date fechaFin = dateFormat.parse(fechaFinStr);
-                usuario ponente = buscarUsuarioPorNombre(nombreponente, usuarios);
-
-                if (ponente == null) {
-                    System.out.println("Error: Ponente no encontrado.");
-                    continue;  // Saltar al siguiente ciclo si el ponente no se encuentra
-                }
-                cursos.add(new curso(idCurso, nombreCurso,fechaInicio,fechaFin,ponente,maxinscripciones,descripcion));
-            }
-        } catch (IOException | NumberFormatException | ParseException e) {
-            e.printStackTrace();
-        }
-        return cursos;
     }
     
     private static usuario buscarUsuarioPorNombre(String nombre, List<usuario> usuarios) {
