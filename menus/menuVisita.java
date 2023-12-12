@@ -39,7 +39,7 @@ public class menuVisita {
 	private static void mostrarMenuVisita() {
         System.out.println("=== Menú Visita ===");
         System.out.println("1. Ver cursos");
-        System.out.println("2. Volver menu anteriror");
+        System.out.println("2. Volver al menu anterior");
         System.out.println("3. Salir");
         System.out.print("Selecciona una opción: ");
     

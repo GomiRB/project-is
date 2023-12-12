@@ -65,12 +65,12 @@ public class menuUsuario {
     }
 
     private static void mostrarMenu() {
-        System.out.println("=== Menú después de iniciar sesión ===");
+        System.out.println("=== Menú de Usuario ===");
         System.out.println("1. Ver cursos disponibles");
         System.out.println("2. Inscribirse en cursos");
         System.out.println("3. Darse de baja de cursos");
         System.out.println("4. Volver al menu anterior");
-        System.out.println("5. Salir del menú");
+        System.out.println("5. Salir del menu");
         System.out.print("Selecciona una opción: ");
     }
 

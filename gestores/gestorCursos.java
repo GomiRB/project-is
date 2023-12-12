@@ -240,7 +240,7 @@ public class gestorCursos {
     	            System.out.println("Nombre: " + curso.getcurso());
     	            System.out.println("Fecha de Inicio: " + curso.getfechaInicio());
     	            System.out.println("Fecha de Fin: " + curso.getfechaFin());
-    	            System.out.println("El maximo de inscripciones: "+curso.getmaxins());
+    	            System.out.println("Maximo de inscripciones: "+curso.getmaxins());
     	            System.out.println("DNI ponenete: " + curso.getponente());
     	            System.out.println("Descripción: " + curso.getdescripcion());
     	            System.out.println("--------------");
