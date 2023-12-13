@@ -25,6 +25,7 @@ public class menuVisita {
                 break;
                 case 3:
                     System.out.println("Saliendo del programa. ¡Hasta luego!");
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, selecciona una opción válida.");

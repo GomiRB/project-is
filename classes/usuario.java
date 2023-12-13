@@ -1,7 +1,6 @@
 package classes;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class usuario implements Serializable{
@@ -12,13 +11,16 @@ public class usuario implements Serializable{
 	private String correoElectronico;
 	private String contraseña;
 	private List<Integer> cursosInscritos;  
+	private boolean esGestorAcademico;
 	
-	public usuario(int dni,String nombreCompleto,String correoElectronico,String contraseña){
+	
+	public usuario(int dni,String nombreCompleto,String correoElectronico,String contraseña, boolean esGestorAcademico){
 		this.dni=dni;
 		this.nombreCompleto=nombreCompleto;
 		this.correoElectronico=correoElectronico;
 		this.contraseña=contraseña;
-		this.cursosInscritos = new ArrayList<>();
+		
+		this.esGestorAcademico = esGestorAcademico;
 	}
 		
 		
@@ -54,7 +56,7 @@ public class usuario implements Serializable{
 		this.contraseña=contraseña;
 	}
 	
-	public boolean estaInscritoEnCurso(int idCurso) {
+	public boolean setestaInscritoEnCurso(int idCurso) {
         return cursosInscritos.contains(idCurso);
     }
 
@@ -71,6 +73,8 @@ public class usuario implements Serializable{
 	public String toString() {
         return dni + "," + nombreCompleto + "," + correoElectronico + "," + contraseña;
     }
-	
+	public boolean getesGestorAcademico() {
+        return esGestorAcademico;
+    }
 	
 }

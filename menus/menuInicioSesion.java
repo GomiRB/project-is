@@ -9,7 +9,6 @@ public class menuInicioSesion {
 	        Scanner scanner = new Scanner(System.in);
 
 	        List<usuario> usuarios =  gestorCursos.cargarUsuarios();
-	        //List<ponente> ponentes = obtenerListaDePonentes();  
 
 	        int opcion;
 	        do {
@@ -21,17 +20,21 @@ public class menuInicioSesion {
 	                    iniciarSesionUsuario(usuarios);
 	                    break;
 	                case 2:
-	                    //iniciarSesionPonente(ponentes);
+	                	iniciarSesionGestorAcademico(usuarios);
 	                    break;
 	                case 3:
 	                	menuVisita.visita();
 	                    break;
 	                case 4:
 	                	menuInicio.inicio();
+	                	break;
 	                case 5:
 	                	System.out.println("Saliendo del programa. ¡Hasta luego!");
+	                	System.exit(0);
+	                	break;
 	                default:
 	                    System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
+	                    System.exit(0);
 	                    break;
 	            }
 	        } while (opcion != 5);
@@ -59,18 +62,19 @@ public class menuInicioSesion {
 				System.out.print("Ingrese su contraseña: ");
 				String contraseña = scanner.nextLine();
 
-				usuario usuarioEncontrado = buscarUsuarioPorDniYContraseña(dni, contraseña, usuarios);
+				boolean esGestorAcademico=false;
+				usuario usuarioEncontrado = buscarUsuarioPorDniYContraseña(dni, contraseña, usuarios,esGestorAcademico);
 
 				if (usuarioEncontrado != null) {
 				    System.out.println("¡Inicio de sesión exitoso como Usuario!");
-				    menuUsuario.menuUsuario(usuarioEncontrado);
+				    menuUsuario.menu(usuarioEncontrado);
 				} else {
 				    System.out.println("Credenciales incorrectas. Inicio de sesión fallido.");
 				}
 			}
 	    }
 
-	    private static usuario buscarUsuarioPorDniYContraseña(int dni, String contraseña, List<usuario> usuarios) {
+	    private static usuario buscarUsuarioPorDniYContraseña(int dni, String contraseña, List<usuario> usuarios,boolean esGestorAcademico) {
 	        for (usuario usuario : usuarios) {
 	            if (usuario.getDni() == dni && usuario.getContraseña().equals(contraseña)) {
 	                return usuario;
@@ -78,6 +82,28 @@ public class menuInicioSesion {
 	        }
 	        return null;
 	    }
-
 	    
-}
+	    
+	    
+	    private static void iniciarSesionGestorAcademico(List<usuario> usuarios) {
+	        try (Scanner scanner = new Scanner(System.in)) {
+	            System.out.print("Ingrese su DNI como Gestor Académico: ");
+	            int dni = scanner.nextInt();
+	            scanner.nextLine();  // Consumir la nueva línea después del entero
+
+	            System.out.print("Ingrese su contraseña como Gestor Académico: ");
+	            String contraseña = scanner.nextLine();
+	            
+	            boolean esGestorAcademico=true;
+				usuario gestorEncontrado = buscarUsuarioPorDniYContraseña(dni, contraseña, usuarios,esGestorAcademico);
+
+	            if (gestorEncontrado != null && gestorEncontrado.getesGestorAcademico()) {
+	                System.out.println("¡Inicio de sesión exitoso como Gestor Académico!");
+	                menuGestorAcademico.menu(gestorEncontrado);
+	            } else {
+	                System.out.println("Credenciales incorrectas o no tiene permisos de Gestor Académico. Inicio de sesión fallido.");
+	            }
+	        }
+	    }
+
+	    }
