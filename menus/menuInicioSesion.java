@@ -66,13 +66,13 @@ public class menuInicioSesion {
 				usuario usuarioEncontrado = buscarUsuarioPorDniYContraseña(dni, contraseña, usuarios,esGestorAcademico);
 
 				if (usuarioEncontrado != null) {
-<<<<<<< HEAD
+
 				    System.out.println("¡Inicio de sesión exitoso como Usuario!");
 				    menuUsuario.menu(usuarioEncontrado);
-=======
+
 				    System.out.println("Inicio de sesión exitoso como Usuario");
-				    menuUsuario.menuUsuario(usuarioEncontrado);
->>>>>>> 049c212d8a10cb9c7101c8a7c134f6e41c13c7fb
+				    menuUsuario.menu(usuarioEncontrado);
+
 				} else {
 				    System.out.println("Credenciales incorrectas. Inicio de sesión fallido.");
 				}

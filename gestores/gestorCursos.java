@@ -137,7 +137,7 @@ public class gestorCursos {
     
     
     private static List<usuario> usuarios;
-    private static List<curso> cursos;
+    
 
     public static void registrarUsuario(Scanner scanner,List<usuario> usuarios) {
         System.out.println("=== Registro de Usuario ===");
@@ -165,11 +165,31 @@ public class gestorCursos {
 
     public static void mostrarCursosDisponibles(List<curso> cursos) {
         System.out.println("=== Cursos Disponibles ===");
-        for (curso curso : cursos) {
-            System.out.println(curso.getidCurso() + ". " + curso.getcurso());
+        mostrarInformacionCurso(cursos); 
+    }
+
+    private static void mostrarInformacionCurso(List<curso> cursos) {
+        if (cursos.isEmpty()) {
+            System.out.println("No hay cursos disponibles.");
+        } else {
+            System.out.println("Información de Cursos:");
+            for (curso curso : cursos) {
+                System.out.println("ID: " + curso.getidCurso());
+                System.out.println("Nombre: " + curso.getcurso());
+                System.out.println("Fecha de Inicio: " + curso.getfechaInicio());
+                System.out.println("Fecha de Fin: " + curso.getfechaFin());
+                System.out.println("Maximo de inscripciones: " + curso.getmaxins());
+                
+                // Acceder al DNI del ponente
+                System.out.println("DNI ponente: " + curso.getponente().getDni());
+                
+                System.out.println("Descripción: " + curso.getdescripcion());
+                System.out.println("--------------");
+            }
         }
     }
 
+    
     public static void registrarEnCurso(Scanner scanner, usuario usuario, List<curso> listaCursos) {
         System.out.println("=== Registro en Curso ===");
         System.out.println("Ingrese el ID del curso al que desea inscribirse:");
@@ -209,7 +229,7 @@ public class gestorCursos {
         }
     }
 
-<<<<<<< HEAD
+
     public static void crearCurso(Scanner scanner, List<usuario> usuarios) {
     	List<curso> cursos = new ArrayList<>();
         System.out.println("=== Crear Nuevo Curso ===");
@@ -270,26 +290,10 @@ public class gestorCursos {
         System.out.println("Nuevo curso creado con éxito: " + nuevoCurso.getcurso());
         gestorCursos.guardarCursos(cursos);
         scanner.close();
-=======
+        }
     
-    private static void mostrarInformacionCurso(List<curso> cursos) {
-    	 if (cursos.isEmpty()) {
-    	        System.out.println("No hay cursos disponibles.");
-    	    } else {
-    	        System.out.println("Información de Cursos:");
-    	        for (curso curso : cursos) {
-    	            System.out.println("ID: " + curso.getidCurso());
-    	            System.out.println("Nombre: " + curso.getcurso());
-    	            System.out.println("Fecha de Inicio: " + curso.getfechaInicio());
-    	            System.out.println("Fecha de Fin: " + curso.getfechaFin());
-    	            System.out.println("Maximo de inscripciones: "+curso.getmaxins());
-    	            System.out.println("DNI ponenete: " + curso.getponente());
-    	            System.out.println("Descripción: " + curso.getdescripcion());
-    	            System.out.println("--------------");
-    	        }
-    	    }	
->>>>>>> 049c212d8a10cb9c7101c8a7c134f6e41c13c7fb
-    }
+    
+
 
     public static void editarCurso(Scanner scanner, List<curso> cursos) {
         mostrarCursosDisponibles(cursos);

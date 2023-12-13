@@ -53,21 +53,21 @@ public class menuUsuario {
     }
 
     private static void mostrarMenu() {
-<<<<<<< HEAD
+
         System.out.println("=== Menú usuario ===");
         System.out.println("1. Ver cursos disponibles");
         System.out.println("2. Inscribirse en cursos");
         System.out.println("3. Darse de baja de cursos");
         System.out.println("4. Volver al menú anterior");
         System.out.println("5. Salir del menú");
-=======
+
         System.out.println("=== Menú de Usuario ===");
         System.out.println("1. Ver cursos disponibles");
         System.out.println("2. Inscribirse en cursos");
         System.out.println("3. Darse de baja de cursos");
         System.out.println("4. Volver al menu anterior");
         System.out.println("5. Salir del menu");
->>>>>>> 049c212d8a10cb9c7101c8a7c134f6e41c13c7fb
+
         System.out.print("Selecciona una opción: ");
     }
 }
