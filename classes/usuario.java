@@ -11,16 +11,15 @@ public class usuario implements Serializable{
 	private String correoElectronico;
 	private String contraseña;
 	private List<Integer> cursosInscritos;  
-	private boolean esGestorAcademico;
 	
 	
-	public usuario(int dni,String nombreCompleto,String correoElectronico,String contraseña, boolean esGestorAcademico){
+	
+	public usuario(int dni,String nombreCompleto,String correoElectronico,String contraseña){
 		this.dni=dni;
 		this.nombreCompleto=nombreCompleto;
 		this.correoElectronico=correoElectronico;
 		this.contraseña=contraseña;
 		
-		this.esGestorAcademico = esGestorAcademico;
 	}
 		
 		
@@ -73,8 +72,6 @@ public class usuario implements Serializable{
 	public String toString() {
         return dni + "," + nombreCompleto + "," + correoElectronico + "," + contraseña;
     }
-	public boolean getesGestorAcademico() {
-        return esGestorAcademico;
-    }
 	
-}
+
+	}

@@ -1,16 +1,14 @@
 package menus;
 
-import java.util.List;
 import java.util.Scanner;
 
-import classes.curso;
 import classes.usuario;
 import gestores.gestorCursos;
 
 public class menuUsuario {
 
     public static void menu(usuario usuario) {
-        List<curso> cursos = gestorCursos.cargarCursos();
+        
         Scanner scanner = new Scanner(System.in);
 
         int opcion;
@@ -20,10 +18,10 @@ public class menuUsuario {
 
             switch (opcion) {
                 case 1:
-                    gestorCursos.mostrarCursosDisponibles(cursos);
+                    gestorCursos.mostrarCursosDisponibles();
                     break;
                 case 2:
-                    gestorCursos.registrarEnCurso(scanner, usuario, cursos);
+                    gestorCursos.registrarEnCurso(scanner, usuario);
                     break;
                 case 3:
                     gestorCursos.mostrarRelacionCursosUsuarios();
@@ -43,9 +41,8 @@ public class menuUsuario {
 
         } while (opcion != 5);
 
-        gestorCursos.guardarCursos(cursos);
-
-        scanner.close();
+        
+        
     }
 
     private static int obtenerOpcion(Scanner scanner) {
@@ -60,13 +57,6 @@ public class menuUsuario {
         System.out.println("3. Darse de baja de cursos");
         System.out.println("4. Volver al menú anterior");
         System.out.println("5. Salir del menú");
-
-        System.out.println("=== Menú de Usuario ===");
-        System.out.println("1. Ver cursos disponibles");
-        System.out.println("2. Inscribirse en cursos");
-        System.out.println("3. Darse de baja de cursos");
-        System.out.println("4. Volver al menu anterior");
-        System.out.println("5. Salir del menu");
 
         System.out.print("Selecciona una opción: ");
     }

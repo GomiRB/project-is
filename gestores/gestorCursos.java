@@ -21,56 +21,63 @@ public class gestorCursos {
     private static final String USUARIOS_FILE = "usuarios.txt";
     private static final String CURSOS_FILE = "cursos.txt";
     private static final String RELACION_FILE = "relacion_cursos_usuarios.txt";
+    private static final String GESTOR_FILE="gestor_academico.txt";
 
+    
     public static List<usuario> cargarUsuarios() {
         List<usuario> usuarios = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(USUARIOS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                int dni = Integer.parseInt(parts[0]);
-                String nombreCompleto = parts[1];
-                String correo = parts[2];
-                String contraseña = parts[3];
-                boolean esGestorAcademico = Boolean.parseBoolean(parts[4]);
-                usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña, esGestorAcademico));
+                
+                // Validar que haya suficientes partes en la línea antes de intentar acceder a ellas
+                if (parts.length == 4) {
+                    int dni = Integer.parseInt(parts[0]);
+                    String nombreCompleto = parts[1];
+                    String correo = parts[2];
+                    String contraseña = parts[3];
+                    
+                    usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña));
+                } else {
+                    // Manejar el formato incorrecto de la línea (puedes imprimir un mensaje o registrar un error)
+                    System.err.println("Formato incorrecto en la línea: " + line);
+                }
             }
         } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+            e.printStackTrace();  // Considera un manejo más específico de errores
         }
         return usuarios;
     }
-    
-    public static List<curso> cargarCursos() {
-        List<curso> cursos = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(CURSOS_FILE))) {
+
+    public static List<usuario> cargarGestor() {
+        List<usuario> usuarios = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(GESTOR_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                int idCurso = Integer.parseInt(parts[0]);
-                String nombreCurso = parts[1];
-                String fechaInicioStr = parts[2];
-                String fechaFinStr = parts[3];
-                String nombreponente = parts[4];
-                int maxinscripciones = Integer.parseInt(parts[5]);
-                String descripcion = parts[6];
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date fechaInicio = dateFormat.parse(fechaInicioStr);
-                Date fechaFin = dateFormat.parse(fechaFinStr);
-                usuario ponente = buscarUsuarioPorNombre(nombreponente, usuarios);
-
-                if (ponente == null) {
-                    System.out.println("Error: Ponente no encontrado.");
-                    continue;  // Saltar al siguiente ciclo si el ponente no se encuentra
+                
+                // Validar que haya suficientes partes en la línea antes de intentar acceder a ellas
+                if (parts.length == 4) {
+                    int dni = Integer.parseInt(parts[0]);
+                    String nombreCompleto = parts[1];
+                    String correo = parts[2];
+                    String contraseña = parts[3];
+                    
+                    usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña));
+                } else {
+                    // Manejar el formato incorrecto de la línea (puedes imprimir un mensaje o registrar un error)
+                    System.err.println("Formato incorrecto en la línea: " + line);
                 }
-                cursos.add(new curso(idCurso, nombreCurso,fechaInicio,fechaFin,ponente,maxinscripciones,descripcion));
             }
-        } catch (IOException | NumberFormatException | ParseException e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();  // Considera un manejo más específico de errores
         }
-        return cursos;
+        return usuarios;
     }
+
+    
+
    
     public static List<CursoUsuarioRelacion> cargarRelacionCursosUsuarios() {
         List<CursoUsuarioRelacion> relaciones = new ArrayList<>();
@@ -92,7 +99,7 @@ public class gestorCursos {
         try (PrintWriter writer = new PrintWriter(new FileWriter(USUARIOS_FILE))) {
             for (usuario user : usuarios) {
                 writer.println(user.getDni() + "," + user.getNombreCompleto() + "," +
-                                user.getCorreoElectronico() + "," + user.getContraseña() + "," + user.getesGestorAcademico());
+                                user.getCorreoElectronico() + "," + user.getContraseña());
             }
             System.out.println("Datos de usuarios guardados correctamente en " + USUARIOS_FILE);
         } catch (IOException e) {
@@ -113,7 +120,6 @@ public class gestorCursos {
                     dateFormat.format(curso.getfechaInicio()) + "," +
                     dateFormat.format(curso.getfechaFin()) + "," +
                     curso.getponente().getDni() + "," +  
-                    curso.getponente().getesGestorAcademico() + "," +  // Añadir esta línea
                     curso.getmaxins() + "," +
                     curso.getdescripcion()
                 );
@@ -157,18 +163,60 @@ public class gestorCursos {
         System.out.print("Contraseña: ");
         String contraseña = scanner.nextLine();
 
-        usuario nuevoUsuario = new usuario(dni, nombreCompleto, correoElectronico, contraseña, false);
+        usuario nuevoUsuario = new usuario(dni, nombreCompleto, correoElectronico, contraseña);
         usuarios.add(nuevoUsuario);
 
         System.out.println("Usuario registrado exitosamente.");
+        scanner.close();
     }
 
-    public static void mostrarCursosDisponibles(List<curso> cursos) {
+    public static List<curso> cargarCursos() {
+        List<curso> cursos = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(CURSOS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int idCurso = Integer.parseInt(parts[0]);
+                String nombreCurso = parts[1];
+                String fechaInicioStr = parts[2];
+                String fechaFinStr = parts[3];
+                int dniPonente = Integer.parseInt(parts[4]);
+                int maxinscripciones = Integer.parseInt(parts[5]);
+                String descripcion = parts[6];
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date fechaInicio = dateFormat.parse(fechaInicioStr);
+                Date fechaFin = dateFormat.parse(fechaFinStr);
+                usuario ponente = buscarUsuarioPorDni(dniPonente, usuarios);
+
+                if (ponente == null) {
+                    System.out.println("Error: Ponente no encontrado.");
+                    continue;  // Saltar al siguiente ciclo si el ponente no se encuentra
+                }
+                cursos.add(new curso(idCurso, nombreCurso,fechaInicio,fechaFin,ponente,maxinscripciones,descripcion));
+            }
+        } catch (IOException | NumberFormatException | ParseException e) {
+            e.printStackTrace();
+        }
+        return cursos;
+    }
+    
+    
+    
+    public static void mostrarCursosDisponibles() {
+    	List<curso> cursos = gestorCursos.cargarCursos();
         System.out.println("=== Cursos Disponibles ===");
-        mostrarInformacionCurso(cursos); 
+        if (cursos.isEmpty()) {
+            System.out.println("No hay cursos disponibles.");
+        } else {
+        	
+            mostrarInformacionCurso();
+        }
     }
 
-    private static void mostrarInformacionCurso(List<curso> cursos) {
+
+    private static void mostrarInformacionCurso() {
+    	List<curso> cursos = gestorCursos.cargarCursos();
         if (cursos.isEmpty()) {
             System.out.println("No hay cursos disponibles.");
         } else {
@@ -190,13 +238,14 @@ public class gestorCursos {
     }
 
     
-    public static void registrarEnCurso(Scanner scanner, usuario usuario, List<curso> listaCursos) {
+    public static void registrarEnCurso(Scanner scanner, usuario usuario) {
+    	List<curso> listacursos = gestorCursos.cargarCursos();
         System.out.println("=== Registro en Curso ===");
         System.out.println("Ingrese el ID del curso al que desea inscribirse:");
         int idCurso = scanner.nextInt();
         scanner.nextLine();
 
-        curso cursoEncontrado = buscarCursoPorId(idCurso, listaCursos);
+        curso cursoEncontrado = buscarCursoPorId(idCurso, listacursos);
 
         if (cursoEncontrado == null) {
             System.out.println("Curso no encontrado.");
@@ -214,6 +263,7 @@ public class gestorCursos {
         } else {
             System.out.println("Ya está inscrito en este curso.");
         }
+        scanner.close();
     }
    
     public static void mostrarRelacionCursosUsuarios() {
@@ -295,8 +345,9 @@ public class gestorCursos {
     
 
 
-    public static void editarCurso(Scanner scanner, List<curso> cursos) {
-        mostrarCursosDisponibles(cursos);
+    public static void editarCurso(Scanner scanner) {
+    	List<curso> cursos = gestorCursos.cargarCursos();
+        mostrarCursosDisponibles();
         System.out.print("Ingrese el ID del curso que desea editar: ");
         int idCursoEditar = scanner.nextInt();
         scanner.nextLine();  
@@ -346,6 +397,7 @@ public class gestorCursos {
         guardarCursos(cursos);
 
         System.out.println("Curso editado exitosamente.");
+        scanner.close();
     }
 
     
@@ -357,6 +409,10 @@ public class gestorCursos {
     }
 
     private static usuario buscarUsuarioPorDni(int dni, List<usuario> usuarios) {
+    	if (usuarios == null) {
+            System.err.println("Error: La lista de usuarios es null.");
+            return null;
+    	}
         for (usuario user : usuarios) {
             if (user.getDni() == dni) {
                 return user;
@@ -376,14 +432,7 @@ public class gestorCursos {
         return null;
     }
     
-    private static usuario buscarUsuarioPorNombre(String nombre, List<usuario> usuarios) {
-        for (usuario usuario : usuarios) {
-            if (usuario.getNombreCompleto().equals(nombre)) {
-                return usuario;
-            }
-        }
-        return null; // Devolver null si no se encuentra ningún usuario con ese nombre
-    }
+    
 
 public static void eliminarUsuario(Scanner scanner, List<usuario> usuarios) {
     // Mostrar la lista de usuarios para que el usuario elija
@@ -407,6 +456,7 @@ public static void eliminarUsuario(Scanner scanner, List<usuario> usuarios) {
     } else {
         System.out.println("Usuario no encontrado.");
     }
+    scanner.close();
 }
 
 private static usuario buscarUsuarioPorDNI(int dni, List<usuario> usuarios) {
@@ -418,10 +468,11 @@ private static usuario buscarUsuarioPorDNI(int dni, List<usuario> usuarios) {
     return null;
     }
 
-public static void eliminarCurso(Scanner scanner, List<curso> cursos) {
+public static void eliminarCurso(Scanner scanner) {
+	List<curso> cursos = gestorCursos.cargarCursos();
     // Mostrar la lista de cursos para que el usuario elija
     System.out.println("=== Eliminar Curso ===");
-    mostrarCursosDisponibles(cursos);
+    mostrarCursosDisponibles();
 
     System.out.print("Ingrese el ID del curso que desea eliminar: ");
     int idCursoEliminar = scanner.nextInt();
@@ -440,6 +491,7 @@ public static void eliminarCurso(Scanner scanner, List<curso> cursos) {
     } else {
         System.out.println("Curso no encontrado.");
     }
+    scanner.close();
 }
 
 }

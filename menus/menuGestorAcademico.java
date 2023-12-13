@@ -21,7 +21,7 @@ public class menuGestorAcademico {
 
             switch (opcion) {
                 case 1:
-                    gestorCursos.mostrarCursosDisponibles(cursos);
+                    gestorCursos.mostrarCursosDisponibles();
                     break;
                 case 2:
                     gestorCursos.mostrarRelacionCursosUsuarios();
@@ -40,18 +40,18 @@ public class menuGestorAcademico {
                     
                     break;
                 case 6:
-                	 gestorCursos.mostrarCursosDisponibles(cursos);                   
+                	 gestorCursos.mostrarCursosDisponibles();                   
                     break;
                 case 7:
                 	gestorCursos.crearCurso(scanner,usuarios);
                     
                     break;
                 case 8:
-                	gestorCursos.editarCurso(scanner, cursos);
+                	gestorCursos.editarCurso(scanner);
                     
                     break;
                 case 9:
-                	gestorCursos.eliminarCurso(scanner, cursos);
+                	gestorCursos.eliminarCurso(scanner);
                     
                     break;
                 case 10:

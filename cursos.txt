@@ -1,1 +1,1 @@
-1,php,2023-12-23,2023-12-23,77036914,true,45,iniciciacion php
+2,python,2023-12-25,2023-12-25,12345678,12,python iniciacion
