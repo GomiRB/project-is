@@ -209,6 +209,7 @@ public class gestorCursos {
         }
     }
 
+<<<<<<< HEAD
     public static void crearCurso(Scanner scanner, List<usuario> usuarios) {
     	List<curso> cursos = new ArrayList<>();
         System.out.println("=== Crear Nuevo Curso ===");
@@ -269,6 +270,25 @@ public class gestorCursos {
         System.out.println("Nuevo curso creado con éxito: " + nuevoCurso.getcurso());
         gestorCursos.guardarCursos(cursos);
         scanner.close();
+=======
+    
+    private static void mostrarInformacionCurso(List<curso> cursos) {
+    	 if (cursos.isEmpty()) {
+    	        System.out.println("No hay cursos disponibles.");
+    	    } else {
+    	        System.out.println("Información de Cursos:");
+    	        for (curso curso : cursos) {
+    	            System.out.println("ID: " + curso.getidCurso());
+    	            System.out.println("Nombre: " + curso.getcurso());
+    	            System.out.println("Fecha de Inicio: " + curso.getfechaInicio());
+    	            System.out.println("Fecha de Fin: " + curso.getfechaFin());
+    	            System.out.println("Maximo de inscripciones: "+curso.getmaxins());
+    	            System.out.println("DNI ponenete: " + curso.getponente());
+    	            System.out.println("Descripción: " + curso.getdescripcion());
+    	            System.out.println("--------------");
+    	        }
+    	    }	
+>>>>>>> 049c212d8a10cb9c7101c8a7c134f6e41c13c7fb
     }
 
     public static void editarCurso(Scanner scanner, List<curso> cursos) {

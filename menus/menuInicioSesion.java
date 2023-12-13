@@ -48,7 +48,7 @@ public class menuInicioSesion {
 	        System.out.println("1. Iniciar sesión como Usuario");
 	        System.out.println("2. Iniciar sesión como Gestor Academico");
 	        System.out.println("3. Visitante");
-	        System.out.println("4. Volver menu anterior");
+	        System.out.println("4. Volver al menu anterior");
 	        System.out.println("5. Salir");
 	        System.out.print("Selecciona una opción: ");
 	    }
@@ -66,8 +66,13 @@ public class menuInicioSesion {
 				usuario usuarioEncontrado = buscarUsuarioPorDniYContraseña(dni, contraseña, usuarios,esGestorAcademico);
 
 				if (usuarioEncontrado != null) {
+<<<<<<< HEAD
 				    System.out.println("¡Inicio de sesión exitoso como Usuario!");
 				    menuUsuario.menu(usuarioEncontrado);
+=======
+				    System.out.println("Inicio de sesión exitoso como Usuario");
+				    menuUsuario.menuUsuario(usuarioEncontrado);
+>>>>>>> 049c212d8a10cb9c7101c8a7c134f6e41c13c7fb
 				} else {
 				    System.out.println("Credenciales incorrectas. Inicio de sesión fallido.");
 				}
