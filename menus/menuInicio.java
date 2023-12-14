@@ -38,6 +38,7 @@ public class menuInicio {
 			            break;
 			    }
 			} while (opcion != 2);
+			scanner.close();
 		}
 
 		 

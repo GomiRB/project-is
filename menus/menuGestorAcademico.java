@@ -1,5 +1,6 @@
 package menus;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,16 +11,23 @@ import gestores.gestorCursos;
 public class menuGestorAcademico {
 
     public static void menu(usuario usuario) {
-        List<curso> cursos = gestorCursos.cargarCursos();
+        
         List<usuario> usuarios=gestorCursos.cargarUsuarios();
-        Scanner scanner = new Scanner(System.in);
+        List<curso> cursos = gestorCursos.cargarCursos(usuarios);
 
-        int opcion;
-        do {
-            mostrarMenu();
-            opcion = obtenerOpcion(scanner);
 
-            switch (opcion) {
+        try (Scanner scanner = new Scanner(System.in)) {
+			int opcion=0;
+			do {
+			    mostrarMenu();			    
+			    try {
+			        opcion = scanner.nextInt();
+			    } catch (InputMismatchException e) {
+			        System.out.println("Error: Ingresa un valor entero válido.");
+			        scanner.nextLine();  // Consumir la nueva línea después del token no válido
+			        continue;  // O realiza alguna acción para manejar el error
+			    }
+			    switch (opcion) {
                 case 1:
                     gestorCursos.mostrarCursosDisponibles();
                     break;
@@ -28,22 +36,22 @@ public class menuGestorAcademico {
                     break;
                 case 3:
                 	
-                	gestorCursos.mostrarUsuarios(usuarios);
+                	gestorCursos.mostrarUsuarios();
                     
                     break;
                 case 4:
-                	gestorCursos.guardarUsuarios(usuarios);
+                	gestorCursos.guardarUsuarios();
                     
                     break;
                 case 5:
-                	 gestorCursos.eliminarUsuario(scanner, usuarios);
+                	 gestorCursos.eliminarUsuario(scanner);
                     
                     break;
                 case 6:
                 	 gestorCursos.mostrarCursosDisponibles();                   
                     break;
                 case 7:
-                	gestorCursos.crearCurso(scanner,usuarios);
+                	gestorCursos.crearCurso(scanner);
                     
                     break;
                 case 8:
@@ -69,15 +77,16 @@ public class menuGestorAcademico {
             }
 
         } while (opcion != 5);
-
-        gestorCursos.guardarCursos(cursos);
-
-        scanner.close();
+			gestorCursos.guardarCursos(cursos);
+			scanner.close();
+		}
     }
+        
 
-    private static int obtenerOpcion(Scanner scanner) {
-        return scanner.nextInt();
-    }
+        
+        
+
+    
     
     private static void mostrarMenu() {
         System.out.println("=== Menú Gestor Académico ===");

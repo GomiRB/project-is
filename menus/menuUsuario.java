@@ -1,5 +1,6 @@
 package menus;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import classes.usuario;
@@ -8,15 +9,20 @@ import gestores.gestorCursos;
 public class menuUsuario {
 
     public static void menu(usuario usuario) {
+
         
-        Scanner scanner = new Scanner(System.in);
-
-        int opcion;
-        do {
-            mostrarMenu();
-            opcion = obtenerOpcion(scanner);
-
-            switch (opcion) {
+        try (Scanner scanner = new Scanner(System.in)) {
+			int opcion=0;
+			do {
+			    mostrarMenu();			    
+			    try {
+			        opcion = scanner.nextInt();
+			    } catch (InputMismatchException e) {
+			        System.out.println("Error: Ingresa un valor entero válido.");
+			        scanner.nextLine();  // Consumir la nueva línea después del token no válido
+			        continue;  // O realiza alguna acción para manejar el error
+			    }
+			    switch (opcion) {
                 case 1:
                     gestorCursos.mostrarCursosDisponibles();
                     break;
@@ -40,14 +46,9 @@ public class menuUsuario {
             }
 
         } while (opcion != 5);
-
-        
-        
-    }
-
-    private static int obtenerOpcion(Scanner scanner) {
-        return scanner.nextInt();
-    }
+        scanner.close();
+    }        
+}
 
     private static void mostrarMenu() {
 

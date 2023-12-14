@@ -1,1 +1,3 @@
-2,python,2023-12-25,2023-12-25,12345678,12,python iniciacion
+2,php,2023-12-23,2023-12-24,12345678,45,php iniciacion
+1,python,2023-12-26,2023-12-26,12345678,30,python iniciacion
+3,baile,2024-01-10,2024-01-11,77036914,10,baile contemporaneo

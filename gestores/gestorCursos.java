@@ -95,7 +95,8 @@ public class gestorCursos {
         return relaciones;
     }
     
-    public static void guardarUsuarios(List<usuario> usuarios) {
+    public static void guardarUsuarios() {
+    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
         try (PrintWriter writer = new PrintWriter(new FileWriter(USUARIOS_FILE))) {
             for (usuario user : usuarios) {
                 writer.println(user.getDni() + "," + user.getNombreCompleto() + "," +
@@ -142,7 +143,7 @@ public class gestorCursos {
 
     
     
-    private static List<usuario> usuarios;
+    
     
 
     public static void registrarUsuario(Scanner scanner,List<usuario> usuarios) {
@@ -170,7 +171,7 @@ public class gestorCursos {
         scanner.close();
     }
 
-    public static List<curso> cargarCursos() {
+    public static List<curso> cargarCursos(List<usuario> usuarios) {
         List<curso> cursos = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(CURSOS_FILE))) {
             String line;
@@ -193,18 +194,19 @@ public class gestorCursos {
                     System.out.println("Error: Ponente no encontrado.");
                     continue;  // Saltar al siguiente ciclo si el ponente no se encuentra
                 }
-                cursos.add(new curso(idCurso, nombreCurso,fechaInicio,fechaFin,ponente,maxinscripciones,descripcion));
+                cursos.add(new curso(idCurso, nombreCurso, fechaInicio, fechaFin, ponente, maxinscripciones, descripcion));
             }
         } catch (IOException | NumberFormatException | ParseException e) {
             e.printStackTrace();
         }
         return cursos;
     }
+
     
     
     
-    public static void mostrarCursosDisponibles() {
-    	List<curso> cursos = gestorCursos.cargarCursos();
+    public static void mostrarCursosDisponibles(List<usuario>usuarios) {
+    	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
         System.out.println("=== Cursos Disponibles ===");
         if (cursos.isEmpty()) {
             System.out.println("No hay cursos disponibles.");
@@ -216,7 +218,8 @@ public class gestorCursos {
 
 
     private static void mostrarInformacionCurso() {
-    	List<curso> cursos = gestorCursos.cargarCursos();
+    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
         if (cursos.isEmpty()) {
             System.out.println("No hay cursos disponibles.");
         } else {
@@ -239,7 +242,8 @@ public class gestorCursos {
 
     
     public static void registrarEnCurso(Scanner scanner, usuario usuario) {
-    	List<curso> listacursos = gestorCursos.cargarCursos();
+    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    	List<curso> listacursos = gestorCursos.cargarCursos(usuarios);
         System.out.println("=== Registro en Curso ===");
         System.out.println("Ingrese el ID del curso al que desea inscribirse:");
         int idCurso = scanner.nextInt();
@@ -280,8 +284,10 @@ public class gestorCursos {
     }
 
 
-    public static void crearCurso(Scanner scanner, List<usuario> usuarios) {
-    	List<curso> cursos = new ArrayList<>();
+    public static void crearCurso(Scanner scanner) {
+    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
+    	
         System.out.println("=== Crear Nuevo Curso ===");
 
         // Solicitar detalles del curso al gestor academico
@@ -339,14 +345,15 @@ public class gestorCursos {
 
         System.out.println("Nuevo curso creado con éxito: " + nuevoCurso.getcurso());
         gestorCursos.guardarCursos(cursos);
-        scanner.close();
+        
         }
     
     
 
 
     public static void editarCurso(Scanner scanner) {
-    	List<curso> cursos = gestorCursos.cargarCursos();
+    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
         mostrarCursosDisponibles();
         System.out.print("Ingrese el ID del curso que desea editar: ");
         int idCursoEditar = scanner.nextInt();
@@ -401,7 +408,8 @@ public class gestorCursos {
     }
 
     
-    public static void mostrarUsuarios(List<usuario> usuarios) {
+    public static void mostrarUsuarios() {
+    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
         System.out.println("=== Usuarios Registrados ===");
         for (usuario usuario : usuarios) {
             System.out.println(usuario.getDni() + ". " + usuario.getNombreCompleto());
@@ -423,21 +431,15 @@ public class gestorCursos {
     
     
 
-    public static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
-        for (curso curso : cursos) {
-            if (curso.getidCurso() == idCurso) {
-                return curso;
-            }
-        }
-        return null;
-    }
+    
     
     
 
-public static void eliminarUsuario(Scanner scanner, List<usuario> usuarios) {
+public static void eliminarUsuario(Scanner scanner) {
+	List<usuario> usuarios=gestorCursos.cargarUsuarios();
     // Mostrar la lista de usuarios para que el usuario elija
     System.out.println("=== Eliminar Usuario ===");
-    mostrarUsuarios(usuarios);
+    mostrarUsuarios();
 
     System.out.print("Ingrese el DNI del usuario que desea eliminar: ");
     int dniEliminar = scanner.nextInt();
@@ -452,7 +454,7 @@ public static void eliminarUsuario(Scanner scanner, List<usuario> usuarios) {
         System.out.println("Usuario eliminado exitosamente.");
         
         // Guardar la lista actualizada en el archivo
-        guardarUsuarios(usuarios);
+        guardarUsuarios();
     } else {
         System.out.println("Usuario no encontrado.");
     }
@@ -469,7 +471,9 @@ private static usuario buscarUsuarioPorDNI(int dni, List<usuario> usuarios) {
     }
 
 public static void eliminarCurso(Scanner scanner) {
-	List<curso> cursos = gestorCursos.cargarCursos();
+	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    List<curso> cursos = gestorCursos.cargarCursos(usuarios);
+
     // Mostrar la lista de cursos para que el usuario elija
     System.out.println("=== Eliminar Curso ===");
     mostrarCursosDisponibles();
@@ -487,11 +491,33 @@ public static void eliminarCurso(Scanner scanner) {
         System.out.println("Curso eliminado exitosamente.");
 
         // Guardar la lista actualizada en el archivo
-        guardarCursos(cursos);
+        gestorCursos.guardarCursos(cursos);
     } else {
         System.out.println("Curso no encontrado.");
     }
-    scanner.close();
+}
+
+public static void mostrarCursosDisponibles() {
+	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    List<curso> cursos = gestorCursos.cargarCursos(usuarios);
+
+    System.out.println("=== Cursos Disponibles ===");
+    if (cursos.isEmpty()) {
+        System.out.println("No hay cursos disponibles.");
+    } else {
+        mostrarInformacionCurso();
+    }
+}
+
+
+
+public static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
+    for (curso curso : cursos) {
+        if (curso.getidCurso() == idCurso) {
+            return curso;
+        }
+    }
+    return null;
 }
 
 }

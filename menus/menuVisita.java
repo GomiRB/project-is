@@ -29,6 +29,7 @@ public class menuVisita {
 			            break;
 			    }
 			} while (opcion != 3);
+			scanner.close();
 		}
 
        
