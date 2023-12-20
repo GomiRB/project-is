@@ -6,42 +6,45 @@ import classes.usuario;
 import gestores.gestorUsuarios;
 
 public class menuInicioSesion {
-	public static void iniciarMenu() {
-	        try (Scanner scanner = new Scanner(System.in)) {
-				List<usuario> usuarios =  gestorUsuarios.cargarUsuarios();
+	public static void iniciarMenu(Scanner scanner) {
+	    List<usuario> usuarios = gestorUsuarios.cargarUsuarios();
 
-				int opcion;
-				do {
-				    mostrarMenuInicioSesion();
-				    opcion = scanner.nextInt();
+	    int opcion=0;
+	    do {
+	        mostrarMenuInicioSesion();
+	        try {
+	            opcion = scanner.nextInt();
+	            scanner.nextLine();  // Consumir la nueva línea después del entero
+	        } catch (InputMismatchException e) {
+	            System.out.println("Error: Ingresa un valor entero válido.");
+	            scanner.nextLine();  // Consumir la nueva línea después del token no válido
+	            continue;  // Vuelve al inicio del bucle para solicitar una nueva entrada
+	        }
 
-				    switch (opcion) {
-				        case 1:
-				            iniciarSesionUsuario(usuarios);
-				            break;
-				        case 2:
-				        	iniciarSesionGestorAcademico(usuarios);
-				            break;
-				        case 3:
-				        	menuVisita.visita();
-				            break;
-				        case 4:
-				        	menuInicio.inicio();
-				        	break;
-				        case 5:
-				        	System.out.println("Saliendo del programa. ¡Hasta luego!");
-				        	System.exit(0);
-				        	break;
-				        default:
-				            System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
-				            System.exit(0);
-				            break;
-				    }
-				} while (opcion != 5);
-			}
-
-	        
+	        switch (opcion) {
+	            case 1:
+	                iniciarSesionUsuario(usuarios);
+	                break;
+	            case 2:
+	                iniciarSesionGestorAcademico(usuarios);
+	                break;
+	            case 3:
+	                menuVisita.visita(scanner);
+	                break;
+	            case 4:
+	                menuInicio.inicio();
+	                break;
+	            case 5:
+	                System.out.println("Saliendo del programa. ¡Hasta luego!");
+	                System.exit(0);
+	                break;
+	            default:
+	                System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
+	                break;
+	        }
+	    } while (opcion != 5);
 	}
+
 	
 		
 	    private static void mostrarMenuInicioSesion() {
@@ -67,7 +70,7 @@ public class menuInicioSesion {
 
 	            if (usuarioEncontrado != null) {
 	                System.out.println("¡Inicio de sesión exitoso como Usuario!");
-	                menuUsuario.menu(usuarioEncontrado);
+	                menuUsuario.menu(usuarioEncontrado,scanner);
 	            } else {
 	                System.out.println("Credenciales incorrectas. Inicio de sesión fallido.");
 	            }
@@ -102,7 +105,7 @@ public class menuInicioSesion {
 
 	            if (gestorEncontrado != null) {
 	                System.out.println("¡Inicio de sesión exitoso como Gestor Académico!");
-	                menuGestorAcademico.menu(gestorEncontrado);
+	                menuGestorAcademico.menu(gestorEncontrado,scanner);
 	            } else {
 	                System.out.println("Credenciales incorrectas o no tiene permisos de Gestor Académico. Inicio de sesión fallido.");
 	            }

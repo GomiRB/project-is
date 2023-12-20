@@ -1,3 +1,2 @@
-2,php,2023-12-23,2023-12-24,12345678,45,php iniciacion
-1,python,2023-12-26,2023-12-26,12345678,30,python iniciacion
-3,baile,2024-01-10,2024-01-11,77036914,10,baile contemporaneo
+3,php,2023-12-12,2023-12-12,77036914,20,php iniciacion
+4,chapa pintura,2024-12-20,2024-12-21,77036914,20,Modulo de chapa y pintura

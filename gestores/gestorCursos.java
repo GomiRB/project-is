@@ -38,6 +38,29 @@ public class gestorCursos {
         return relaciones;
     }
            
+    public static void guardarRelacionCursosUsuarios(CursoUsuarioRelacion relacion) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(RELACION_FILE, true))) {
+            writer.println(relacion.getIdCurso() + "," + relacion.getNombreCompleto());
+            System.out.println("Relación guardada exitosamente.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar la relación: " + e.getMessage());
+        }
+    }
+
+    
+    public static void mostrarRelacionCursosUsuarios() {
+        List<CursoUsuarioRelacion> relaciones = cargarRelacionCursosUsuarios();
+
+        if (relaciones.isEmpty()) {
+            System.out.println("No hay relaciones entre usuarios y cursos.");
+        } else {
+            System.out.println("Relaciones entre usuarios y cursos:");
+            for (CursoUsuarioRelacion relacion : relaciones) {
+                System.out.println("ID Curso: " + relacion.getIdCurso() + ", Nombre Usuario: " + relacion.getNombreCompleto());
+            }
+        }
+    }
+    
     public static void guardarCursos(List<curso> cursos) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(CURSOS_FILE))) {
             for (curso curso : cursos) {
@@ -53,14 +76,6 @@ public class gestorCursos {
                     curso.getdescripcion()
                 );
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void guardarRelacionCursosUsuarios(CursoUsuarioRelacion relacion) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(RELACION_FILE, true))) {
-            writer.println(relacion.getIdCurso() + "," + relacion.getNombreCompleto());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,8 +147,9 @@ public class gestorCursos {
     }
 
     public static void registrarEnCurso(Scanner scanner, usuario usuario) {
-    	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
-    	List<curso> listacursos = gestorCursos.cargarCursos(usuarios);
+        List<usuario> usuarios = gestorUsuarios.cargarUsuarios();
+        List<curso> listacursos = gestorCursos.cargarCursos(usuarios);
+
         System.out.println("=== Registro en Curso ===");
         System.out.println("Ingrese el ID del curso al que desea inscribirse:");
         int idCurso = scanner.nextInt();
@@ -146,32 +162,19 @@ public class gestorCursos {
             return;
         }
 
-        // Verificar si el usuario ya está inscrito en ese curso antes de inscribirlo
+        // Crear la relación curso-usuario
+        CursoUsuarioRelacion relacion = new CursoUsuarioRelacion(idCurso, usuario.getNombreCompleto());
+
         if (!usuario.setestaInscritoEnCurso(idCurso)) {
             usuario.inscribirEnCurso(idCurso);
-            System.out.println("Inscripción exitosa al curso: " + cursoEncontrado.getcurso());
-            
-            // Guardar la relación en el archivo
-            CursoUsuarioRelacion relacion = new CursoUsuarioRelacion(idCurso, usuario.getNombreCompleto());
+            // Lógica para guardar la relación curso-usuario
             guardarRelacionCursosUsuarios(relacion);
+            System.out.println("Inscripción exitosa al curso.");
         } else {
-            System.out.println("Ya está inscrito en este curso.");
+            System.out.println("Ya estás inscrito en este curso.");
         }
-        scanner.close();
     }
-   
-    public static void mostrarRelacionCursosUsuarios() {
-        List<CursoUsuarioRelacion> relaciones = cargarRelacionCursosUsuarios();
 
-        if (relaciones.isEmpty()) {
-            System.out.println("No hay relaciones entre usuarios y cursos.");
-        } else {
-            System.out.println("Relaciones entre usuarios y cursos:");
-            for (CursoUsuarioRelacion relacion : relaciones) {
-                System.out.println("ID Curso: " + relacion.getIdCurso() + ", Nombre Usuario: " + relacion.getNombreCompleto());
-            }
-        }
-    }
 
 	public static void crearCurso(Scanner scanner) {
     	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
@@ -290,7 +293,7 @@ public class gestorCursos {
         guardarCursos(cursos);
 
         System.out.println("Curso editado exitosamente.");
-        scanner.close();
+        
     }
 
 	public static void eliminarCurso(Scanner scanner) {

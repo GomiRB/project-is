@@ -6,9 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-
 import classes.usuario;
 
 
@@ -19,8 +19,9 @@ public class gestorUsuarios {
 	private static final String USUARIOS_FILE = "usuarios.txt";
     
 	
-    public static void guardarUsuarios() {
-    	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
+    
+    
+    public static void guardarUsuarios(List<usuario> usuarios) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(USUARIOS_FILE))) {
             for (usuario user : usuarios) {
                 writer.println(user.getDni() + "," + user.getNombreCompleto() + "," +
@@ -32,6 +33,7 @@ public class gestorUsuarios {
             e.printStackTrace();
         }
     }
+
     
     public static void registrarUsuario(Scanner scanner,List<usuario> usuarios) {
         System.out.println("=== Registro de Usuario ===");
@@ -132,31 +134,41 @@ public class gestorUsuarios {
 }
 
     public static void eliminarUsuario(Scanner scanner) {
-	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
-    // Mostrar la lista de usuarios para que el usuario elija
-    System.out.println("=== Eliminar Usuario ===");
-    mostrarUsuarios();
+        List<usuario> usuarios = gestorUsuarios.cargarUsuarios();
 
-    System.out.print("Ingrese el DNI del usuario que desea eliminar: ");
-    int dniEliminar = scanner.nextInt();
-    scanner.nextLine();  // Consumir la nueva línea después del entero
+        // Mostrar la lista de usuarios para que el usuario elija
+        System.out.println("=== Eliminar Usuario ===");
+        mostrarUsuarios();
 
-    // Buscar el usuario en la lista
-    usuario usuarioEliminar = gestorUsuarios.buscarUsuarioPorDNI(dniEliminar, usuarios);
+        try {
+            System.out.print("Ingrese el DNI del usuario que desea eliminar: ");
+            
+            if (scanner.hasNextInt()) {
+                int dniEliminar = scanner.nextInt();
+                scanner.nextLine(); // Consumir la nueva línea después del entero
 
-    if (usuarioEliminar != null) {
-        // Eliminar el usuario de la lista
-        usuarios.remove(usuarioEliminar);
-        System.out.println("Usuario eliminado exitosamente.");
-        
-        // Guardar la lista actualizada en el archivo
-        guardarUsuarios();
-    } else {
-        System.out.println("Usuario no encontrado.");
-    }
-    scanner.close();
-}
+                // Buscar el usuario en la lista
+                usuario usuarioEliminar = gestorUsuarios.buscarUsuarioPorDNI(dniEliminar, usuarios);
 
+                if (usuarioEliminar != null) {
+                    // Eliminar el usuario de la lista
+                    usuarios.remove(usuarioEliminar);
+                    System.out.println("Usuario eliminado exitosamente.");
+
+                    // Guardar la lista actualizada en el archivo
+                    guardarUsuarios(usuarios);
+                } else {
+                    System.out.println("Usuario no encontrado.");
+                }
+            } else {
+                System.out.println("Entrada no válida. Se esperaba un número entero.");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Ingrese un número entero válido como DNI.");
+            scanner.next();  // Consumir la entrada no válida para evitar un bucle infinito
+        }
+    }    
+    
     private static usuario buscarUsuarioPorDNI(int dni, List<usuario> usuarios) {
     for (usuario user : usuarios) {
         if (user.getDni() == dni) {

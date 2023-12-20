@@ -11,77 +11,79 @@ import gestores.gestorUsuarios;
 
 public class menuGestorAcademico {
 
-    public static void menu(usuario usuario) {
-        
-        List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
+    
+    
+    public static void menu(usuario usuario, Scanner scanner) {
+        List<usuario> usuarios = gestorUsuarios.cargarUsuarios();
         List<curso> cursos = gestorCursos.cargarCursos(usuarios);
 
-
-        try (Scanner scanner = new Scanner(System.in)) {
-			int opcion=0;
-			do {
-			    mostrarMenu();			    
-			    try {
-			        opcion = scanner.nextInt();
-			    } catch (InputMismatchException e) {
-			        System.out.println("Error: Ingresa un valor entero válido.");
-			        scanner.nextLine();  // Consumir la nueva línea después del token no válido
-			        continue;  // O realiza alguna acción para manejar el error
-			    }
-			    switch (opcion) {
-                case 1:
-                    gestorCursos.mostrarCursosDisponibles();
-                    break;
-                case 2:
-                    gestorCursos.mostrarRelacionCursosUsuarios();
-                    break;
-                case 3:
-                	
-                	gestorUsuarios.mostrarUsuarios();
-                    
-                    break;
-                case 4:
-                	gestorUsuarios.guardarUsuarios();
-                    
-                    break;
-                case 5:
-                	 gestorUsuarios.eliminarUsuario(scanner);
-                    
-                    break;
-                case 6:
-                	 gestorCursos.mostrarCursosDisponibles();                   
-                    break;
-                case 7:
-                	gestorCursos.crearCurso(scanner);
-                    
-                    break;
-                case 8:
-                	gestorCursos.editarCurso(scanner);
-                    
-                    break;
-                case 9:
-                	gestorCursos.eliminarCurso(scanner);
-                    
-                    break;
-                case 10:
-                	menuInicioSesion.iniciarMenu();
-                    break;
-                case 11:
-                	System.out.println("Saliendo del programa. ¡Hasta luego!");
-                	System.exit(0);
-                    break;
-                default:
-                    
-                	System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
-                	System.exit(0);
-                	break;
+        int opcion = 0;
+        do {
+            mostrarMenu();
+            try {
+                opcion = scanner.nextInt();
+                scanner.nextLine();  // Consumir la nueva línea después del entero
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Ingresa un valor entero válido.");
+                scanner.nextLine();  // Consumir la nueva línea después del token no válido
+                continue;  // Vuelve al inicio del bucle para solicitar una nueva entrada
             }
 
-        } while (opcion != 5);
-			gestorCursos.guardarCursos(cursos);
-			scanner.close();
-		}
+            switch (opcion) {
+                // ... (tus casos existentes)
+            case 1:
+                gestorCursos.mostrarCursosDisponibles();
+                break;
+            case 2:
+                gestorCursos.mostrarRelacionCursosUsuarios();
+                break;
+            case 3:
+            	
+            	gestorUsuarios.mostrarUsuarios();
+                
+                break;
+            case 4:
+            	gestorUsuarios.guardarUsuarios(usuarios);
+                
+                break;
+            case 5:
+            	 gestorUsuarios.eliminarUsuario(scanner);
+                
+                break;
+            case 6:
+            	 gestorCursos.mostrarCursosDisponibles();                   
+                break;
+            case 7:
+            	gestorCursos.crearCurso(scanner);
+                
+                break;
+            case 8:
+            	gestorCursos.editarCurso(scanner);
+                
+                break;
+            case 9:
+            	gestorCursos.eliminarCurso(scanner);
+                
+                break;
+            case 10:
+            	menuInicioSesion.iniciarMenu(scanner);
+                break;
+            case 11:
+                System.out.println("Saliendo del programa. ¡Hasta luego!");
+                System.exit(0);  // Salir del método en lugar de usar System.exit(0)
+
+            default:
+                System.out.println("Opción no válida. Por favor, selecciona una opción válida.");
+                System.exit(0);
+                break;
+            }
+
+        } while (opcion != 11);
+
+        gestorCursos.guardarCursos(cursos);
+        gestorUsuarios.guardarUsuarios(usuarios);
     }
+
         
 
         

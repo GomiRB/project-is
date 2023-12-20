@@ -8,21 +8,20 @@ import gestores.gestorCursos;
 
 public class menuUsuario {
 
-    public static void menu(usuario usuario) {
+    public static void menu(usuario usuario,Scanner scanner) {
 
         
-        try (Scanner scanner = new Scanner(System.in)) {
-			int opcion=0;
-			do {
-			    mostrarMenu();			    
-			    try {
-			        opcion = scanner.nextInt();
-			    } catch (InputMismatchException e) {
-			        System.out.println("Error: Ingresa un valor entero válido.");
-			        scanner.nextLine();  // Consumir la nueva línea después del token no válido
-			        continue;  // O realiza alguna acción para manejar el error
-			    }
-			    switch (opcion) {
+    	int opcion = 0;
+        do {
+            mostrarMenu();
+            try {
+                opcion = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Ingresa un valor entero válido.");
+                scanner.nextLine();  // Consumir la nueva línea después del token no válido
+                continue;  // O realiza alguna acción para manejar el error
+            }
+            switch (opcion) {
                 case 1:
                     gestorCursos.mostrarCursosDisponibles();
                     break;
@@ -33,7 +32,7 @@ public class menuUsuario {
                     gestorCursos.mostrarRelacionCursosUsuarios();
                     break;
                 case 4:
-                    menuInicioSesion.iniciarMenu();
+                    menuInicioSesion.iniciarMenu(scanner);
                     break;
                 case 5:
                     System.out.println("Saliendo del programa. ¡Hasta luego!");
@@ -44,11 +43,9 @@ public class menuUsuario {
                     System.exit(0);
                     break;
             }
-
         } while (opcion != 5);
-        scanner.close();
-    }        
-}
+    }
+
 
     private static void mostrarMenu() {
 
