@@ -18,66 +18,9 @@ import classes.usuario;
 
 public class gestorCursos {
 
-    private static final String USUARIOS_FILE = "usuarios.txt";
+    
     private static final String CURSOS_FILE = "cursos.txt";
     private static final String RELACION_FILE = "relacion_cursos_usuarios.txt";
-    private static final String GESTOR_FILE="gestor_academico.txt";
-
-    
-    public static List<usuario> cargarUsuarios() {
-        List<usuario> usuarios = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(USUARIOS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                
-                // Validar que haya suficientes partes en la línea antes de intentar acceder a ellas
-                if (parts.length == 4) {
-                    int dni = Integer.parseInt(parts[0]);
-                    String nombreCompleto = parts[1];
-                    String correo = parts[2];
-                    String contraseña = parts[3];
-                    
-                    usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña));
-                } else {
-                    // Manejar el formato incorrecto de la línea (puedes imprimir un mensaje o registrar un error)
-                    System.err.println("Formato incorrecto en la línea: " + line);
-                }
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();  // Considera un manejo más específico de errores
-        }
-        return usuarios;
-    }
-
-    public static List<usuario> cargarGestor() {
-        List<usuario> usuarios = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(GESTOR_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                
-                // Validar que haya suficientes partes en la línea antes de intentar acceder a ellas
-                if (parts.length == 4) {
-                    int dni = Integer.parseInt(parts[0]);
-                    String nombreCompleto = parts[1];
-                    String correo = parts[2];
-                    String contraseña = parts[3];
-                    
-                    usuarios.add(new usuario(dni, nombreCompleto, correo, contraseña));
-                } else {
-                    // Manejar el formato incorrecto de la línea (puedes imprimir un mensaje o registrar un error)
-                    System.err.println("Formato incorrecto en la línea: " + line);
-                }
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();  // Considera un manejo más específico de errores
-        }
-        return usuarios;
-    }
-
-    
-
    
     public static List<CursoUsuarioRelacion> cargarRelacionCursosUsuarios() {
         List<CursoUsuarioRelacion> relaciones = new ArrayList<>();
@@ -94,21 +37,6 @@ public class gestorCursos {
         }
         return relaciones;
     }
-    
-    public static void guardarUsuarios() {
-    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
-        try (PrintWriter writer = new PrintWriter(new FileWriter(USUARIOS_FILE))) {
-            for (usuario user : usuarios) {
-                writer.println(user.getDni() + "," + user.getNombreCompleto() + "," +
-                                user.getCorreoElectronico() + "," + user.getContraseña());
-            }
-            System.out.println("Datos de usuarios guardados correctamente en " + USUARIOS_FILE);
-        } catch (IOException e) {
-            System.err.println("Error al escribir en el archivo: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
            
     public static void guardarCursos(List<curso> cursos) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(CURSOS_FILE))) {
@@ -130,45 +58,12 @@ public class gestorCursos {
         }
     }
 
-
-
-    
     public static void guardarRelacionCursosUsuarios(CursoUsuarioRelacion relacion) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(RELACION_FILE, true))) {
             writer.println(relacion.getIdCurso() + "," + relacion.getNombreCompleto());
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    
-    
-    
-    
-
-    public static void registrarUsuario(Scanner scanner,List<usuario> usuarios) {
-        System.out.println("=== Registro de Usuario ===");
-        scanner.nextLine();
-        System.out.print("DNI: ");
-        int dni=0;
-        try {
-            dni = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Ingresa un número válido para el DNI.");
-            return;
-        }
-        System.out.print("Nombre Completo: ");
-        String nombreCompleto = scanner.nextLine();
-        System.out.print("Correo Electrónico: ");
-        String correoElectronico = scanner.nextLine();
-        System.out.print("Contraseña: ");
-        String contraseña = scanner.nextLine();
-
-        usuario nuevoUsuario = new usuario(dni, nombreCompleto, correoElectronico, contraseña);
-        usuarios.add(nuevoUsuario);
-
-        System.out.println("Usuario registrado exitosamente.");
-        scanner.close();
     }
 
     public static List<curso> cargarCursos(List<usuario> usuarios) {
@@ -188,7 +83,7 @@ public class gestorCursos {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date fechaInicio = dateFormat.parse(fechaInicioStr);
                 Date fechaFin = dateFormat.parse(fechaFinStr);
-                usuario ponente = buscarUsuarioPorDni(dniPonente, usuarios);
+                usuario ponente = gestorUsuarios.buscarUsuarioPorDni(dniPonente, usuarios);
 
                 if (ponente == null) {
                     System.out.println("Error: Ponente no encontrado.");
@@ -201,10 +96,7 @@ public class gestorCursos {
         }
         return cursos;
     }
-
-    
-    
-    
+ 
     public static void mostrarCursosDisponibles(List<usuario>usuarios) {
     	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
         System.out.println("=== Cursos Disponibles ===");
@@ -216,9 +108,8 @@ public class gestorCursos {
         }
     }
 
-
     private static void mostrarInformacionCurso() {
-    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
     	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
         if (cursos.isEmpty()) {
             System.out.println("No hay cursos disponibles.");
@@ -240,9 +131,8 @@ public class gestorCursos {
         }
     }
 
-    
     public static void registrarEnCurso(Scanner scanner, usuario usuario) {
-    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+    	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
     	List<curso> listacursos = gestorCursos.cargarCursos(usuarios);
         System.out.println("=== Registro en Curso ===");
         System.out.println("Ingrese el ID del curso al que desea inscribirse:");
@@ -283,9 +173,8 @@ public class gestorCursos {
         }
     }
 
-
-    public static void crearCurso(Scanner scanner) {
-    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+	public static void crearCurso(Scanner scanner) {
+    	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
     	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
     	
         System.out.println("=== Crear Nuevo Curso ===");
@@ -323,7 +212,7 @@ public class gestorCursos {
         System.out.print("Ingrese el DNI del ponente: ");
         int dniPonente = scanner.nextInt();
         scanner.nextLine();  // Consumir la nueva línea después del entero
-        usuario ponente = buscarUsuarioPorDni(dniPonente, usuarios);
+        usuario ponente = gestorUsuarios.buscarUsuarioPorDni(dniPonente, usuarios);
 
         if (ponente == null) {
             System.out.println("Error: Ponente no encontrado.");
@@ -348,11 +237,8 @@ public class gestorCursos {
         
         }
     
-    
-
-
-    public static void editarCurso(Scanner scanner) {
-    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+	public static void editarCurso(Scanner scanner) {
+    	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
     	List<curso> cursos = gestorCursos.cargarCursos(usuarios);
         mostrarCursosDisponibles();
         System.out.print("Ingrese el ID del curso que desea editar: ");
@@ -407,71 +293,8 @@ public class gestorCursos {
         scanner.close();
     }
 
-    
-    public static void mostrarUsuarios() {
-    	List<usuario> usuarios=gestorCursos.cargarUsuarios();
-        System.out.println("=== Usuarios Registrados ===");
-        for (usuario usuario : usuarios) {
-            System.out.println(usuario.getDni() + ". " + usuario.getNombreCompleto());
-        }
-    }
-
-    private static usuario buscarUsuarioPorDni(int dni, List<usuario> usuarios) {
-    	if (usuarios == null) {
-            System.err.println("Error: La lista de usuarios es null.");
-            return null;
-    	}
-        for (usuario user : usuarios) {
-            if (user.getDni() == dni) {
-                return user;
-            }
-        }
-        return null;
-    }
-    
-    
-
-    
-    
-    
-
-public static void eliminarUsuario(Scanner scanner) {
-	List<usuario> usuarios=gestorCursos.cargarUsuarios();
-    // Mostrar la lista de usuarios para que el usuario elija
-    System.out.println("=== Eliminar Usuario ===");
-    mostrarUsuarios();
-
-    System.out.print("Ingrese el DNI del usuario que desea eliminar: ");
-    int dniEliminar = scanner.nextInt();
-    scanner.nextLine();  // Consumir la nueva línea después del entero
-
-    // Buscar el usuario en la lista
-    usuario usuarioEliminar = buscarUsuarioPorDNI(dniEliminar, usuarios);
-
-    if (usuarioEliminar != null) {
-        // Eliminar el usuario de la lista
-        usuarios.remove(usuarioEliminar);
-        System.out.println("Usuario eliminado exitosamente.");
-        
-        // Guardar la lista actualizada en el archivo
-        guardarUsuarios();
-    } else {
-        System.out.println("Usuario no encontrado.");
-    }
-    scanner.close();
-}
-
-private static usuario buscarUsuarioPorDNI(int dni, List<usuario> usuarios) {
-    for (usuario user : usuarios) {
-        if (user.getDni() == dni) {
-            return user;
-        }
-    }
-    return null;
-    }
-
-public static void eliminarCurso(Scanner scanner) {
-	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+	public static void eliminarCurso(Scanner scanner) {
+	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
     List<curso> cursos = gestorCursos.cargarCursos(usuarios);
 
     // Mostrar la lista de cursos para que el usuario elija
@@ -497,8 +320,8 @@ public static void eliminarCurso(Scanner scanner) {
     }
 }
 
-public static void mostrarCursosDisponibles() {
-	List<usuario> usuarios=gestorCursos.cargarUsuarios();
+	public static void mostrarCursosDisponibles() {
+	List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
     List<curso> cursos = gestorCursos.cargarCursos(usuarios);
 
     System.out.println("=== Cursos Disponibles ===");
@@ -509,9 +332,7 @@ public static void mostrarCursosDisponibles() {
     }
 }
 
-
-
-public static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
+	public static curso buscarCursoPorId(int idCurso, List<curso> cursos) {
     for (curso curso : cursos) {
         if (curso.getidCurso() == idCurso) {
             return curso;

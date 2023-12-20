@@ -7,12 +7,13 @@ import java.util.Scanner;
 import classes.curso;
 import classes.usuario;
 import gestores.gestorCursos;
+import gestores.gestorUsuarios;
 
 public class menuGestorAcademico {
 
     public static void menu(usuario usuario) {
         
-        List<usuario> usuarios=gestorCursos.cargarUsuarios();
+        List<usuario> usuarios=gestorUsuarios.cargarUsuarios();
         List<curso> cursos = gestorCursos.cargarCursos(usuarios);
 
 
@@ -36,15 +37,15 @@ public class menuGestorAcademico {
                     break;
                 case 3:
                 	
-                	gestorCursos.mostrarUsuarios();
+                	gestorUsuarios.mostrarUsuarios();
                     
                     break;
                 case 4:
-                	gestorCursos.guardarUsuarios();
+                	gestorUsuarios.guardarUsuarios();
                     
                     break;
                 case 5:
-                	 gestorCursos.eliminarUsuario(scanner);
+                	 gestorUsuarios.eliminarUsuario(scanner);
                     
                     break;
                 case 6:

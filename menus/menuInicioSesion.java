@@ -2,13 +2,13 @@ package menus;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-
 import classes.usuario;
-import gestores.gestorCursos;
+import gestores.gestorUsuarios;
+
 public class menuInicioSesion {
 	public static void iniciarMenu() {
 	        try (Scanner scanner = new Scanner(System.in)) {
-				List<usuario> usuarios =  gestorCursos.cargarUsuarios();
+				List<usuario> usuarios =  gestorUsuarios.cargarUsuarios();
 
 				int opcion;
 				do {
@@ -53,7 +53,6 @@ public class menuInicioSesion {
 	        System.out.println("5. Salir");
 	        System.out.print("Selecciona una opción: ");
 	    }
-
 	    
 	    private static void iniciarSesionUsuario(List<usuario> usuarios) {
 	        try (Scanner scanner = new Scanner(System.in)) {
@@ -89,11 +88,7 @@ public class menuInicioSesion {
 	        }
 	        return null;
 	    }
-
-	    
-	    
-	    
-	    
+    
 	    private static void iniciarSesionGestorAcademico(List<usuario> gestores) {
 	        try (Scanner scanner = new Scanner(System.in)) {
 	            System.out.print("Ingrese su DNI como Gestor Académico: ");
@@ -113,7 +108,6 @@ public class menuInicioSesion {
 	            }
 	        }
 	    }
-
 	    
 	    private static usuario buscarGestorPorDniYContraseña(int dni, String contraseña, List<usuario> gestores) {
 	        for (usuario gestor : gestores) {
@@ -124,7 +118,4 @@ public class menuInicioSesion {
 	        return null;
 	    }
 
-	    
-	    
-
-	    }
+}

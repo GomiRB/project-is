@@ -55,6 +55,8 @@ public class usuario implements Serializable{
 		this.contraseña=contraseña;
 	}
 	
+	
+	
 	public boolean setestaInscritoEnCurso(int idCurso) {
         return cursosInscritos.contains(idCurso);
     }
